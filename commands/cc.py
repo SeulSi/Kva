@@ -3,16 +3,19 @@ import asyncio
 import aiomysql
 import PW
 import datetime
+import TOKEN
 
 from send import Command
 
-'''
+prefix = TOKEN.prefix
+
+"""
 커스텀 커맨드 관련 명령어를 수록합니다.
-'''
+"""
 
-''' Function '''
+""" Function """
 
-''' Main '''
+""" Main """
 
 class cc(Command):
     
@@ -21,12 +24,12 @@ class cc(Command):
 
     async def on_message(self,message):
 
-        ''' 일반 유저 가능 ''' 
+        """ 일반 유저 가능 """ 
 
         if message.channel is None or message.guild is None:
             return 
 
-        if message.content.startswith("봇 "):
+        if message.content.startswith(prefix+""):
             command = message.content[2:]
             async with self.conn_pool.acquire() as conn:
                 async with conn.cursor() as cur:
@@ -36,7 +39,7 @@ class cc(Command):
                     if not row is None:
                         await message.channel.send(row[2])
 
-        if message.content.startswith('봇 커스텀 보기') or message.content.startswith("봇 커스텀보기"):
+        if message.content.startswith(prefix+"커스텀 보기") or message.content.startswith(prefix+"커스텀보기"):
             try:
                 async with self.conn_pool.acquire() as conn:
                     async with conn.cursor() as cur:
@@ -57,10 +60,10 @@ class cc(Command):
                 embed=discord.Embed(title="❌ 오류 발생", description="오류로 커스텀 명령어 불러오기에 실패하였습니다. 지속적으로 문제가 발생한다면 BGM#0970 DM 바랍니다. %s" %(error) ,color=0xff0909 )
                 await message.channel.send(embed=embed)
 
-        ''' 어드민, 오너 사용 가능 '''
+        """ 어드민, 오너 사용 가능 """
 
-        if message.content.startswith('봇 커스텀 추가'):
-            if message.author.guild_permissions.administrator == True or message.author.id == 289729741387202560:
+        if message.content.startswith(prefix+"커스텀 추가"):
+            if message.author.guild_permissions.administrator == True or message.author.id == 294146247512555521 or message.author.id == 371639335046348802 or message.author.id == 271639823859580939:
                 a = message.content[8:].lstrip()
                 if a == "":
                     embed=discord.Embed(title="⚠ 주의", description="`봇 커스텀 추가 [명령어]/[봇의 대답]` 형식으로 작성해주세요.",color=0xd8ef56)
@@ -110,8 +113,8 @@ class cc(Command):
                 embed=discord.Embed(title="⚠ 주의", description="관리자 권한 또는 봇 오너여야 사용 가능한 명령어입니다.",color=0xd8ef56)
                 await message.channel.send(embed=embed)
 
-        if message.content.startswith('봇 커스텀 수정'):
-            if message.author.guild_permissions.administrator == True or message.author.id == 289729741387202560:
+        if message.content.startswith(prefix+"커스텀 수정"):
+            if message.author.guild_permissions.administrator == True or message.author.id == 294146247512555521 or message.author.id == 371639335046348802:
                 a = message.content[8:].lstrip()
                 if a == "":
                     embed=discord.Embed(title="⚠ 주의", description="`봇 커스텀 수정 [명령어]/[봇의 대답]` 형식으로 작성해주세요.",color=0xd8ef56)
@@ -166,8 +169,8 @@ class cc(Command):
 
 
 
-        if message.content.startswith('봇 커스텀 삭제'):
-            if message.author.guild_permissions.administrator == True or message.author.id == 289729741387202560:
+        if message.content.startswith(prefix+"커스텀 삭제"):
+            if message.author.guild_permissions.administrator == True or message.author.id == 294146247512555521 or message.author.id == 371639335046348802:
                 a = message.content[8:].lstrip()
                 if a == "":
                     embed=discord.Embed(title="⚠ 주의", description="`봇 커스텀 삭제 [삭제할 명령어]` 형식으로 작성해주세요.",color=0xd8ef56)
@@ -196,8 +199,8 @@ class cc(Command):
                 embed=discord.Embed(title="⚠ 주의", description="관리자 권한 또는 봇 오너여야 사용 가능한 명령어입니다.",color=0xd8ef56)
                 await message.channel.send(embed=embed)
 
-        if message.content == ('봇 커스텀 초기화') or message.content == ("봇 커스텀초기화"):
-            if message.author.guild_permissions.administrator == True or message.author.id == 289729741387202560:
+        if message.content == (prefix+"커스텀 초기화") or message.content == (prefix+"커스텀초기화"):
+            if message.author.guild_permissions.administrator == True or message.author.id == 294146247512555521 or message.author.id == 371639335046348802:
                     async with self.conn_pool.acquire() as conn:
                         async with conn.cursor() as cur:
                             await cur.execute("""SELECT command FROM cc WHERE server = %s""", (str(message.guild.id)))
@@ -212,7 +215,7 @@ class cc(Command):
                         def usercheck(a):
                             return a.author == message.author
 
-                        answer = await self.client.wait_for('message', check=usercheck, timeout=30)
+                        answer = await self.client.wait_for("message", check=usercheck, timeout=30)
                         answer = answer.content
                         
                         if answer == "y":

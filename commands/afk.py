@@ -1,17 +1,20 @@
 import discord
 import asyncio
-import datetime 
+import datetime
+import TOKEN
 
 from send import Command
 
-'''
+prefix = TOKEN.prefix
+
+"""
 AFK 부분을 담당합니다.
-'''
+"""
 
 
-''' Function '''
+""" Function """
 
-''' Main ''' 
+""" Main """ 
 class afk(Command):
 
     def __init__(self, *args, **kwargs):
@@ -32,10 +35,10 @@ class afk(Command):
 
 
 
-        if message.content.startswith("봇 잠수") or message.content.startswith("봇 afk"):
+        if message.content.startswith(prefix+"잠수") or message.content.startswith(prefix+"afk"):
             msg = message.content
-            msg = msg.replace("봇 잠수", "")
-            msg = msg.replace("봇 afk", "")
+            msg = msg.replace(prefix+"잠수", "")
+            msg = msg.replace(prefix+"afk", "")
             reason = msg.lstrip()
             if reason == "" : reason = "사유가 없습니다."
             try:
